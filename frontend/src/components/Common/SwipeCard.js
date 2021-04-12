@@ -17,12 +17,13 @@ function SwipeCard(props) {
   const name = data.name;
   const images = data.images;
   const location = data.location;
-  const cuisine = data.cuisine;
   const price = data.price;
-  const rating = data.rating.toFixed(1);
+  const rating = data.rating?.toFixed(1);
+  const vote = props.vote;
 
+  const voteStyle = vote === undefined ? '' : 'Voted';
   return (
-    <div className="SwipeCard" onClick = {cardClicked}>
+    <div className={`SwipeCard ${voteStyle}`} onClick = {cardClicked}>
       <div className="CardImage">
         <img className="CardImage" src={images} ></img>
       </div>
@@ -31,7 +32,6 @@ function SwipeCard(props) {
       </div>
       <p className='PlaceDetails' id= 'location'> {location} </p>
       <p className='PlaceDetails' id = 'price'> {price} </p>
-      <p className='PlaceDetails' id = 'cuisine'> {cuisine} </p>
       <p className='PlaceDetails' id = 'rating'> {rating} Rating</p>
     </div>
   );

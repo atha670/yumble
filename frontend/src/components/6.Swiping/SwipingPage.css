@@ -27,6 +27,10 @@
   border-radius: 50%;
 }
 
+.hide {
+  visibility: hidden;
+}
+
 #YesButton {
   background-color: #6dc070; /* Green */
 }
@@ -42,3 +46,9 @@
 #NoButton:hover {
   background-color: #d66354;
 }
+
+.ActionableSwipeCard {
+  z-index: 6;
+  position: relative;
+}
+

@@ -8,6 +8,7 @@ import {SocketContext} from '../../sockets/SocketContext';
 import * as SocketEvents from '../../sockets';
 import {getNearbyRestaurants} from '../Common/LocationHelper';
 import axios from 'axios';
+import Button from 'react-bootstrap/esm/Button';
 
 /**
  *
@@ -21,7 +22,6 @@ function Preferences() {
   const [Price, setPrice] = useState('1');
   const [Distance, setDistance] = useState('5000');
   const [Location, setLocation] = useState('');
-  const [Cuisines] = useState([]);
   const [Coordinates, setCoordinates] = useState({lat: null, lng: null});
   const [redirect, setRedirect] = useState(false);
   const [cardData, setCardData] = useState(null);
@@ -43,6 +43,8 @@ function Preferences() {
     axios.post('sessions', response).then((response) => {
       // ensure you only do it once
       setCode(response.data.truncCode);
+      // Host room once session has been created
+      SocketEvents.hostRoom(socketContext.socket, response.data.truncCode);
     });
   }, []);
 
@@ -50,8 +52,7 @@ function Preferences() {
    *
    */
   async function handleSearch() {
-    const data = await getNearbyRestaurants(
-        Coordinates, Distance, 'european');
+    const data = await getNearbyRestaurants(Coordinates, Distance, Price);
     setCardData(data);
   }
 
@@ -61,16 +62,19 @@ function Preferences() {
     }
   }, [cardData]);
 
+  const goBack = () => {
+    SocketEvents.leaveRoom(socketContext.socket);
+  };
 
   const postPreference = () => {
     socketContext.setCode(code);
     socketContext.setHost(true);
+    socketContext.setTimer(Timer);
     SocketEvents.setRestaurants(socketContext.socket, code, cardData);
 
     const newPref = {
       location: Location,
       distance: Number(Distance),
-      cuisines: Cuisines,
       price: Number(Price),
       timer: Timer,
       coordinates: Coordinates,
@@ -92,13 +96,6 @@ function Preferences() {
     SocketEvents.joinRoom(socketContext.socket,
         code, 'Host');
     setRedirect(true);
-    // {redirect && <Redirect to={
-    //   {
-    //     pathname: `/Lobby/${code}`,
-    //     state: cardData,
-    //   }
-    // }
-    // />}
   };
 
   return (
@@ -161,18 +158,20 @@ function Preferences() {
             </div>
           </div>
           <Link to='/'>
-            <button className='SmallBtn' id='BackButton'>
-              Back
-            </button>
+            <Button variant='danger' size='lg' id='BackButton'
+              onClick={() => goBack()}>
+                Back
+            </Button>
           </Link>
 
-          <button
+          <Button
             onClick={() => setButtonPopup(true)}
-            className='SmallBtn'
+            variant='info'
+            size='lg'
             id='HelpButton'
           >
-            help?
-          </button>
+            Help
+          </Button>
           <Help trigger={ButtonPopup} setTrigger={setButtonPopup}>
             <p>
               If you are visiting this page, you are likely here because you are

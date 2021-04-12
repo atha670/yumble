@@ -53,17 +53,6 @@ const Lobby = (props) => {
     history.goBack();
   };
 
-  // Dummy data for Cuisines as this has not been linked to backend yet.
-  const NumOfCusines = [];
-
-  NumOfCusines.length == 0 ? NumOfCusines.push('Thai') : null;
-  NumOfCusines.length > 0
-    ?(NumOfCusines.push(', ' + 'Burger'),
-    NumOfCusines.push(', ' + 'European'),
-    NumOfCusines.push(', ' + 'Mediterranean'),
-    NumOfCusines.push(', ' + 'Chinese'))
-    :null;
-
   let NumOfUsers = 0;
   NumOfUsers = users.length;
 
@@ -76,7 +65,7 @@ const Lobby = (props) => {
       const FoodID = Food.concat(i.toString());
       peopleArray.push(
           <div className={FoodID} id='FoodIcon' key={i.toString()}>
-            <text className='FoodIconText'>{users[i]}</text>
+            <div className='FoodIconText'>{users[i]}</div>
           </div>,
       );
     }
@@ -87,7 +76,6 @@ const Lobby = (props) => {
     <>
       <h1 className='Title'>yumble</h1>
       <div className='MakeCentre'>
-        <div className='CusineTitle'>Cusines: {NumOfCusines}</div>
         <div className={'LobbyBox'}>
           <div>
             <div className='Inline_Block'>Group code: {socketContext.code}</div>
